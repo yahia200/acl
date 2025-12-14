@@ -8,6 +8,7 @@ from typing import Dict, List, Any, Optional
 from utils import Neo4jConnection, get_neo4j_connection, format_kg_results
 from sentence_transformers import SentenceTransformer
 import numpy as np
+from cypher_templates import QUERY_TEMPLATES, get_query_by_intent
 
 
 class GraphRetriever:
@@ -30,218 +31,88 @@ class GraphRetriever:
     
     def query_1_longest_delays(self, limit: int = 10) -> List[Dict]:
         """Query 1: Flights with longest arrival delays"""
-        query = """
-        MATCH (j:Journey)-[:ON]->(f:Flight)-[:DEPARTS_FROM]->(origin:Airport)
-        MATCH (f)-[:ARRIVES_AT]->(dest:Airport)
-        WHERE j.arrival_delay_minutes IS NOT NULL
-        RETURN f.flight_number as flight_number,
-               origin.station_code as origin,
-               dest.station_code as destination,
-               f.fleet_type_description as aircraft,
-               AVG(j.arrival_delay_minutes) as avg_delay_minutes,
-               COUNT(j) as journey_count
-        ORDER BY avg_delay_minutes DESC
-        LIMIT $limit
-        """
-        return self.conn.execute_query(query, {"limit": limit})
+        return self.conn.execute_query(QUERY_TEMPLATES["longest_delays"], {"limit": limit})
     
     def query_2_route_search(self, origin: str, destination: str) -> List[Dict]:
         """Query 2: Flights on a specific route"""
-        query = """
-        MATCH (f:Flight)-[:DEPARTS_FROM]->(origin:Airport {station_code: $origin})
-        MATCH (f)-[:ARRIVES_AT]->(dest:Airport {station_code: $destination})
-        MATCH (j:Journey)-[:ON]->(f)
-        RETURN f.flight_number as flight_number,
-               f.fleet_type_description as aircraft,
-               origin.station_code as origin,
-               dest.station_code as destination,
-               COUNT(j) as number_of_journeys,
-               AVG(j.arrival_delay_minutes) as avg_delay
-        """
-        return self.conn.execute_query(query, {"origin": origin, "destination": destination})
+        return self.conn.execute_query(QUERY_TEMPLATES["route_search"], 
+                                        {"origin": origin, "destination": destination})
     
     def query_3_common_aircraft(self, limit: int = 10) -> List[Dict]:
         """Query 3: Most common aircraft types"""
-        query = """
-        MATCH (f:Flight)
-        WITH f.fleet_type_description as aircraft_type, COUNT(DISTINCT f) as flight_count
-        RETURN aircraft_type, flight_count
-        ORDER BY flight_count DESC
-        LIMIT $limit
-        """
-        return self.conn.execute_query(query, {"limit": limit})
+        return self.conn.execute_query(QUERY_TEMPLATES["common_aircraft"], {"limit": limit})
     
     def query_4_avg_satisfaction_by_class(self, passenger_class: str) -> List[Dict]:
         """Query 4: Average food satisfaction by passenger class"""
-        query = """
-        MATCH (j:Journey {passenger_class: $passenger_class})
-        WHERE j.food_satisfaction_score IS NOT NULL
-        RETURN j.passenger_class as passenger_class,
-               AVG(j.food_satisfaction_score) as avg_food_satisfaction,
-               COUNT(j) as total_journeys,
-               MIN(j.food_satisfaction_score) as min_score,
-               MAX(j.food_satisfaction_score) as max_score
-        """
-        return self.conn.execute_query(query, {"passenger_class": passenger_class})
+        return self.conn.execute_query(QUERY_TEMPLATES["satisfaction_by_class"], 
+                                        {"passenger_class": passenger_class})
     
     def query_5_satisfaction_by_generation(self) -> List[Dict]:
         """Query 5: Food satisfaction by generation"""
-        query = """
-        MATCH (p:Passenger)-[:TOOK]->(j:Journey)
-        WHERE j.food_satisfaction_score IS NOT NULL AND p.generation IS NOT NULL
-        RETURN p.generation as generation,
-               AVG(j.food_satisfaction_score) as avg_satisfaction,
-               COUNT(j) as journey_count
-        ORDER BY avg_satisfaction DESC
-        """
-        return self.conn.execute_query(query)
+        return self.conn.execute_query(QUERY_TEMPLATES["satisfaction_by_generation"])
     
     def query_6_satisfaction_by_loyalty(self) -> List[Dict]:
         """Query 6: Satisfaction by loyalty level"""
-        query = """
-        MATCH (p:Passenger)-[:TOOK]->(j:Journey)
-        WHERE j.food_satisfaction_score IS NOT NULL AND p.loyalty_program_level IS NOT NULL
-        RETURN p.loyalty_program_level as loyalty_level,
-               AVG(j.food_satisfaction_score) as avg_satisfaction,
-               COUNT(j) as journey_count
-        ORDER BY avg_satisfaction DESC
-        """
-        return self.conn.execute_query(query)
+        return self.conn.execute_query(QUERY_TEMPLATES["satisfaction_by_loyalty"])
     
     def query_7_longest_routes(self, limit: int = 10) -> List[Dict]:
         """Query 7: Longest flight routes by miles"""
-        query = """
-        MATCH (j:Journey)-[:ON]->(f:Flight)-[:DEPARTS_FROM]->(origin:Airport)
-        MATCH (f)-[:ARRIVES_AT]->(dest:Airport)
-        WHERE j.actual_flown_miles IS NOT NULL
-        RETURN f.flight_number as flight_number,
-               origin.station_code as origin,
-               dest.station_code as destination,
-               j.actual_flown_miles as miles,
-               f.fleet_type_description as aircraft
-        ORDER BY j.actual_flown_miles DESC
-        LIMIT $limit
-        """
-        return self.conn.execute_query(query, {"limit": limit})
+        return self.conn.execute_query(QUERY_TEMPLATES["longest_routes"], {"limit": limit})
     
     def query_8_popular_departure_airports(self, limit: int = 10) -> List[Dict]:
         """Query 8: Most popular departure airports"""
-        query = """
-        MATCH (f:Flight)-[:DEPARTS_FROM]->(airport:Airport)
-        WITH airport.station_code as airport_code, COUNT(DISTINCT f) as departure_count
-        RETURN airport_code, departure_count
-        ORDER BY departure_count DESC
-        LIMIT $limit
-        """
-        return self.conn.execute_query(query, {"limit": limit})
+        return self.conn.execute_query(QUERY_TEMPLATES["popular_departure_airports"], {"limit": limit})
     
     def query_9_popular_arrival_airports(self, limit: int = 10) -> List[Dict]:
         """Query 9: Most popular arrival airports"""
-        query = """
-        MATCH (f:Flight)-[:ARRIVES_AT]->(airport:Airport)
-        WITH airport.station_code as airport_code, COUNT(DISTINCT f) as arrival_count
-        RETURN airport_code, arrival_count
-        ORDER BY arrival_count DESC
-        LIMIT $limit
-        """
-        return self.conn.execute_query(query, {"limit": limit})
+        return self.conn.execute_query(QUERY_TEMPLATES["popular_arrival_airports"], {"limit": limit})
     
     def query_10_generation_travel_stats(self) -> List[Dict]:
         """Query 10: Which generation travels the most"""
-        query = """
-        MATCH (p:Passenger)-[:TOOK]->(j:Journey)
-        WHERE p.generation IS NOT NULL
-        RETURN p.generation as generation,
-               COUNT(j) as total_journeys,
-               AVG(j.actual_flown_miles) as avg_miles_per_journey,
-               SUM(j.actual_flown_miles) as total_miles
-        ORDER BY total_journeys DESC
-        """
-        return self.conn.execute_query(query)
+        return self.conn.execute_query(QUERY_TEMPLATES["generation_travel_stats"])
     
     def query_11_journey_complexity(self) -> List[Dict]:
         """Query 11: Multi-leg vs direct flights"""
-        query = """
-        MATCH (j:Journey)
-        WHERE j.number_of_legs IS NOT NULL
-        WITH CASE 
-            WHEN j.number_of_legs = 1 THEN 'Direct'
-            ELSE 'Multi-leg'
-        END as journey_type,
-        j.number_of_legs as legs,
-        COUNT(j) as count
-        RETURN journey_type, legs, count
-        ORDER BY legs
-        """
-        return self.conn.execute_query(query)
+        return self.conn.execute_query(QUERY_TEMPLATES["journey_complexity"])
     
     def query_12_delay_satisfaction_correlation(self) -> List[Dict]:
         """Query 12: Relationship between delays and satisfaction"""
-        query = """
-        MATCH (j:Journey)
-        WHERE j.arrival_delay_minutes IS NOT NULL 
-          AND j.food_satisfaction_score IS NOT NULL
-        WITH CASE
-            WHEN j.arrival_delay_minutes <= 0 THEN 'On Time/Early'
-            WHEN j.arrival_delay_minutes <= 30 THEN 'Short Delay (1-30 min)'
-            WHEN j.arrival_delay_minutes <= 60 THEN 'Medium Delay (31-60 min)'
-            ELSE 'Long Delay (60+ min)'
-        END as delay_category,
-        j.arrival_delay_minutes as delay,
-        j.food_satisfaction_score as satisfaction
-        RETURN delay_category,
-               COUNT(*) as journey_count,
-               AVG(satisfaction) as avg_satisfaction,
-               AVG(delay) as avg_delay_minutes
-        ORDER BY avg_delay_minutes
-        """
-        return self.conn.execute_query(query)
+        return self.conn.execute_query(QUERY_TEMPLATES["delay_satisfaction_correlation"])
     
     def get_query_by_intent(self, intent: str, entities: Dict[str, Any]) -> List[Dict]:
         """Route to appropriate query based on intent and entities"""
         
-        if intent == "flight_delay":
-            return self.query_1_longest_delays()
-        
-        elif intent == "flight_route":
-            if "origin" in entities and "destination" in entities:
-                return self.query_2_route_search(entities["origin"], entities["destination"])
-            return []
-        
-        elif intent == "aircraft_info":
-            return self.query_3_common_aircraft()
-        
-        elif intent == "satisfaction":
-            if "passenger_class" in entities:
-                return self.query_4_avg_satisfaction_by_class(entities["passenger_class"])
-            return []
-        
-        elif intent == "satisfaction_by_demographic":
-            return self.query_5_satisfaction_by_generation()
-        
-        elif intent == "satisfaction_by_loyalty":
-            return self.query_6_satisfaction_by_loyalty()
-        
-        elif intent == "route_distance":
-            return self.query_7_longest_routes()
-        
-        elif intent == "popular_airports":
-            if entities.get("type") == "arrival":
-                return self.query_9_popular_arrival_airports()
-            else:
-                return self.query_8_popular_departure_airports()
-        
-        elif intent == "passenger_demographics":
-            return self.query_10_generation_travel_stats()
-        
-        elif intent == "journey_complexity":
-            return self.query_11_journey_complexity()
-        
-        elif intent == "correlation":
-            return self.query_12_delay_satisfaction_correlation()
-        
-        else:
-            # Default: return some general statistics
+        try:
+            # Get the query template from the intent mapping
+            query_template = get_query_by_intent(intent)
+            
+            # Prepare parameters based on intent
+            params = {}
+            
+            if intent == "flight_route":
+                if "origin" not in entities or "destination" not in entities:
+                    return []
+                params = {"origin": entities["origin"], "destination": entities["destination"]}
+            
+            elif intent == "satisfaction" and "passenger_class" in entities:
+                params = {"passenger_class": entities["passenger_class"]}
+            
+            elif intent == "popular_airports":
+                # Handle special case for arrival vs departure airports
+                if entities.get("type") == "arrival":
+                    query_template = QUERY_TEMPLATES["popular_arrival_airports"]
+                params = {"limit": entities.get("limit", 10)}
+            
+            elif intent in ["flight_delay", "aircraft_info", "route_distance", "popular_airports_departure", 
+                          "popular_airports_arrival", "route_performance", "fleet_performance"]:
+                # Queries that take limit parameter
+                params = {"limit": entities.get("limit", 10)}
+            
+            # Execute query
+            return self.conn.execute_query(query_template, params)
+            
+        except KeyError:
+            # Intent not found, return default statistics
             return self.query_10_generation_travel_stats()
 
 
