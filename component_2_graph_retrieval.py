@@ -83,30 +83,40 @@ class GraphRetriever:
         """Route to appropriate query based on intent and entities"""
         
         try:
-            # Get the query template from the intent mapping
-            query_template = get_query_by_intent(intent)
-            
             # Prepare parameters based on intent
             params = {}
             
+            # Special handling for intents with required parameters
             if intent == "flight_route":
                 if "origin" not in entities or "destination" not in entities:
                     return []
+                query_template = get_query_by_intent(intent)
                 params = {"origin": entities["origin"], "destination": entities["destination"]}
             
-            elif intent == "satisfaction" and "passenger_class" in entities:
+            elif intent == "satisfaction":
+                # Only use satisfaction_by_class if passenger_class is provided
+                if "passenger_class" not in entities:
+                    return []
+                query_template = get_query_by_intent(intent)
                 params = {"passenger_class": entities["passenger_class"]}
             
             elif intent == "popular_airports":
                 # Handle special case for arrival vs departure airports
                 if entities.get("type") == "arrival":
                     query_template = QUERY_TEMPLATES["popular_arrival_airports"]
+                else:
+                    query_template = get_query_by_intent(intent)
                 params = {"limit": entities.get("limit", 10)}
             
             elif intent in ["flight_delay", "aircraft_info", "route_distance", "popular_airports_departure", 
                           "popular_airports_arrival", "route_performance", "fleet_performance"]:
                 # Queries that take limit parameter
+                query_template = get_query_by_intent(intent)
                 params = {"limit": entities.get("limit", 10)}
+            
+            else:
+                # For other intents (no parameters needed)
+                query_template = get_query_by_intent(intent)
             
             # Execute query
             return self.conn.execute_query(query_template, params)

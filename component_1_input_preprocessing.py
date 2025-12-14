@@ -107,11 +107,38 @@ class InputPreprocessor:
         """
         question_lower = question.lower()
         
-        # Check each intent pattern
-        for intent, patterns in self.intent_patterns.items():
-            for pattern in patterns:
-                if re.search(pattern, question_lower):
-                    return intent
+        # Check more specific intents first to avoid false matches
+        # Order matters: more specific patterns should be checked before general ones
+        specific_intents = [
+            "satisfaction_by_demographic",
+            "satisfaction_by_loyalty",
+            "flight_route",
+            "route_distance",
+            "journey_complexity",
+            "correlation"
+        ]
+        
+        general_intents = [
+            "flight_delay",
+            "aircraft_info",
+            "satisfaction",
+            "popular_airports",
+            "passenger_demographics"
+        ]
+        
+        # Check specific intents first
+        for intent in specific_intents:
+            if intent in self.intent_patterns:
+                for pattern in self.intent_patterns[intent]:
+                    if re.search(pattern, question_lower):
+                        return intent
+        
+        # Then check general intents
+        for intent in general_intents:
+            if intent in self.intent_patterns:
+                for pattern in self.intent_patterns[intent]:
+                    if re.search(pattern, question_lower):
+                        return intent
         
         return "general"
     
@@ -208,6 +235,14 @@ class InputPreprocessor:
             "embedding": embedding,
             "embedding_shape": embedding.shape
         }
+    
+    def process_input(self, question: str) -> Dict[str, Any]:
+        """
+        Alias for preprocess() - for compatibility
+        Complete preprocessing pipeline
+        Returns all preprocessing results
+        """
+        return self.preprocess(question)
     
 def demo_preprocessing():
     """Demonstrate the input preprocessing capabilities"""

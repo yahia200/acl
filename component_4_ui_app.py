@@ -280,15 +280,17 @@ def main():
             if results["embedding_results"]:
                 st.subheader("3️⃣ Similar Nodes (Embeddings)")
                 with st.expander("View embedding-based retrieval"):
-                    st.write(f"**Model:** {results['embedding_results']['model']}")
+                    st.markdown(f"**Model:** {results['embedding_results']['model']}")
                     for node in results["embedding_results"]["similar_nodes"][:3]:
-                        st.write(f"- {node['description']} *(similarity: {node['similarity']:.3f})*")
+                        st.markdown(f"- {node['description']} *(similarity: {node['similarity']:.3f})*")
         
         # LLM Answer (full width)
         st.subheader("4️⃣ Final Answer")
         if results["llm_answer"]:
             with st.container():
-                st.success(results["llm_answer"]["answer"])
+                # Use markdown to render formatted text properly
+                st.markdown(f"**Answer:**")
+                st.markdown(results["llm_answer"]["answer"])
                 
                 # Metadata
                 with st.expander("View generation details"):

@@ -36,7 +36,10 @@ acl/
 ├── component_2_graph_retrieval.py          # Component 2: Cypher + Embeddings
 ├── component_3_llm_layer.py                # Component 3: LLM integration
 ├── component_4_ui_app.py                   # Component 4: Streamlit UI
+├── cypher_templates.py                     # Cypher query template library
+├── model_comparison.py                     # Model comparison experiment (3.c)
 │
+├── MODEL_COMPARISON.md                     # Model comparison documentation
 └── README.md                               # This file
 ```
 
@@ -121,7 +124,21 @@ python component_2_graph_retrieval.py
 python component_3_llm_layer.py
 ```
 
-### 7. Run the Streamlit UI
+### 7. Run Model Comparison Experiment (Optional)
+
+Compare all 3 LLM models on multiple questions:
+
+```bash
+# Run comparison on 5 questions (default)
+python model_comparison.py
+
+# Quick test on 1 question
+python model_comparison.py quick
+```
+
+Results saved to `model_comparison_report.json`. See `MODEL_COMPARISON.md` for details.
+
+### 8. Run the Streamlit UI
 
 Launch the complete system:
 
@@ -233,6 +250,38 @@ Click **"Export Results as JSON"** to download query results
 1. `Qwen/Qwen2.5-1.5B-Instruct` - Fast, efficient model
 2. `google/gemma-2-2b-it` - Balanced performance
 3. `Qwen/Qwen2.5-7B-Instruct` - High quality answers
+
+#### Model Comparison (Component 3.c)
+
+**File**: `model_comparison.py`  
+**Documentation**: See `MODEL_COMPARISON.md` for detailed methodology
+
+Run comprehensive model comparison experiment:
+
+```bash
+# Full comparison (5 questions)
+python model_comparison.py
+
+# Custom number of questions
+python model_comparison.py 10
+
+# Quick test (1 question)
+python model_comparison.py quick
+```
+
+**Output**: 
+- Console: Real-time comparison results
+- File: `model_comparison_report.json` with quantitative & qualitative analysis
+
+**Comparison Metrics**:
+- **Quantitative**: Generation time, answer length, success rate, consistency
+- **Qualitative**: Answer quality, data utilization, clarity, specificity, coherence
+
+All 3 models are tested with:
+- Same questions
+- Same KG context
+- Same prompt structure
+- Controlled parameters for fair comparison
 
 ### Component 4: Streamlit UI
 

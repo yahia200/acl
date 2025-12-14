@@ -1,0 +1,228 @@
+{
+  "timestamp": "2025-12-14T16:03:15.107646",
+  "models_compared": [
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "google/gemma-2-2b-it",
+    "Qwen/Qwen2.5-7B-Instruct"
+  ],
+  "total_questions": 5,
+  "quantitative_analysis": {
+    "Qwen/Qwen2.5-1.5B-Instruct": {
+      "avg_generation_time": 6.691465044021607,
+      "min_generation_time": 1.673454999923706,
+      "max_generation_time": 16.319994926452637,
+      "avg_answer_length": 84.6,
+      "total_questions": 5,
+      "successful_responses": 5,
+      "errors": 0,
+      "success_rate": 1.0
+    },
+    "google/gemma-2-2b-it": {
+      "avg_generation_time": 1.4814560413360596,
+      "min_generation_time": 0.6123311519622803,
+      "max_generation_time": 3.474639892578125,
+      "avg_answer_length": 79.6,
+      "total_questions": 5,
+      "successful_responses": 5,
+      "errors": 0,
+      "success_rate": 1.0
+    },
+    "Qwen/Qwen2.5-7B-Instruct": {
+      "avg_generation_time": 2.4545929431915283,
+      "min_generation_time": 0.6996893882751465,
+      "max_generation_time": 3.946962594985962,
+      "avg_answer_length": 122.2,
+      "total_questions": 5,
+      "successful_responses": 5,
+      "errors": 0,
+      "success_rate": 1.0
+    }
+  },
+  "qualitative_analysis": {
+    "criteria": {
+      "answer_quality": "Relevance, accuracy, and completeness of answers",
+      "data_utilization": "How well the model uses KG data in responses",
+      "clarity": "Clear and understandable language",
+      "specificity": "Uses specific numbers and facts from data",
+      "coherence": "Logical flow and structure of answers"
+    },
+    "observations": {
+      "Qwen/Qwen2.5-1.5B-Instruct": [
+        "Average answer length: 805 characters",
+        "Utilizes numerical data in 3/3 answers",
+        "Shows clear data attribution in 3/3 answers"
+      ],
+      "google/gemma-2-2b-it": [
+        "Average answer length: 644 characters",
+        "Utilizes numerical data in 3/3 answers",
+        "Shows clear data attribution in 2/3 answers"
+      ],
+      "Qwen/Qwen2.5-7B-Instruct": [
+        "Average answer length: 907 characters",
+        "Utilizes numerical data in 3/3 answers",
+        "Shows clear data attribution in 3/3 answers"
+      ]
+    }
+  },
+  "per_question_results": [
+    {
+      "question": "Which flights have the longest arrival delays?",
+      "intent": "flight_delay",
+      "entities": {
+        "metric": "arrival_delay_minutes",
+        "order": "DESC"
+      },
+      "kg_result_count": 10,
+      "model_results": {
+        "Qwen/Qwen2.5-1.5B-Instruct": {
+          "answer": "Based on the provided results, the flight with the longest arrival delay is Flight 3573, which departed from EWX (Edmonton International Airport) to YYX (Yukon City International Airport). The average delay for this flight was 172 minutes. This makes it the flight with the highest delay among all the given entries in the dataset.",
+          "generation_time": 3.921793222427368,
+          "prompt_length": 203,
+          "answer_length": 54,
+          "model": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        "google/gemma-2-2b-it": {
+          "answer": "Based on the provided data, flights with the longest average delay minutes are:\n\n* **Flight 757** with an average delay of **430.5 minutes**.\n* **Flight 2673** with an average delay of **321.0 minutes**. \n\nIt's worth noting that these are just the flights with the highest average delay minutes. The total delay time might be influenced by other factors, and we don't have enough information to determine the impact of delays on flight performance or customer satisfaction.",
+          "generation_time": 1.3027753829956055,
+          "prompt_length": 203,
+          "answer_length": 76,
+          "model": "google/gemma-2-2b-it"
+        },
+        "Qwen/Qwen2.5-7B-Instruct": {
+          "answer": "Based on the data provided, the flight with the longest average arrival delay is Flight 757, with an average delay of 430.5 minutes. This flight originates from DEX and is destined for JAX, operating with an A320-200 aircraft.\n\nThe next longest average delay is for Flight 2673, with an average delay of 321.0 minutes. This flight originates from TPX and is destined for IAX, using an A319-100 aircraft.\n\nAll other flights have shorter average delays compared to these two. Specifically:\n\n- Flight 2 has an average delay of 220.33 minutes.\n- Flight 302 has an average delay of 205.0 minutes.\n- Flight 532 has an average delay of 196.0 minutes.\n- Flight 103 has an average delay of 183.0 minutes.\n- Flight 2384 has an average delay of 181.0 minutes.\n- Flight 659 has an average delay of 177.0 minutes.\n- Flight 24 has an average delay of 175.0 minutes.\n- Flight 3573 has an average delay of 172.0 minutes.\n\nIn summary, the flights with the longest arrival delays are:\n1. Flight 757 with an average delay of 430.5 minutes.\n2. Flight 2673 with an average delay of 321.0 minutes.",
+          "generation_time": 3.4229354858398438,
+          "prompt_length": 203,
+          "answer_length": 190,
+          "model": "Qwen/Qwen2.5-7B-Instruct"
+        }
+      }
+    },
+    {
+      "question": "Show me all flights from LAX to IAX",
+      "intent": "flight_route",
+      "entities": {
+        "origin": "LAX",
+        "destination": "IAX"
+      },
+      "kg_result_count": 21,
+      "model_results": {
+        "Qwen/Qwen2.5-1.5B-Instruct": {
+          "answer": "Based on the provided data, there are several flights from LAX (Los Angeles International Airport) to IAX (International Airport of Indiana). Here are some details:\n\n### Flights From LAX to IAX:\n- **Flight Number:** 2411\n  - Aircraft: B777-200\n  - Origin: LAX\n  - Destination: IAX\n  - Number of Journeys: 2\n  - Average Delay: -5.5 days\n\n- **Flight Number:** 2608\n  - Aircraft: B737-800\n  - Origin: LAX\n  - Destination: IAX\n  - Number of Journeys: 3\n  - Average Delay: -7.666666666666667 days\n\n- **Flight Number:** 500\n  - Aircraft: B737-900\n  - Origin: LAX\n  - Destination: IAX\n  - Number of Journeys: 2\n  - Average Delay: -25.0 days\n\n- **Flight Number:** 1414\n  - Aircraft: B737-800\n  - Origin: LAX\n  - Destination: IAX\n  - Number of Journeys: 1\n  - Average Delay: -11.0 days\n\n- **Flight Number:** 1653\n  - Aircraft: B737-900\n  - Origin: LAX\n  - Destination: IAX\n  - Number of Journeys: 2\n  - Average Delay: -7.0 days\n\n- **Flight Number:** 2385\n  - Aircraft: B737-900\n  - Origin: LAX\n  - Destination: IAX\n  - Number of Journeys: 2\n  - Average Delay: 2.0 days\n\nThese flights demonstrate different types of aircraft (B777-200, B737-800, B737-900, B737-MAX9) operating between Los Angeles International Airport and International Airport of Indiana, with varying numbers of journeys and average delays. The average delay for these flights ranges from -7.5 days (-5.5 days in one case and -7.66666",
+          "generation_time": 16.319994926452637,
+          "prompt_length": 358,
+          "answer_length": 216,
+          "model": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        "google/gemma-2-2b-it": {
+          "answer": "Here are all the flights from LAX to IAX based on the provided data:\n\n* **Flight 2411:** B777-200, origin LAX, destination IAX, number of journeys: 2, avg delay: -5.5 \n* **Flight 2608:** B737-800, origin LAX, destination IAX, number of journeys: 3, avg delay: -7.666666666666667\n* **Flight 500:** B737-900, origin LAX, destination IAX, number of journeys: 2, avg delay: -25.0\n* **Flight 1414:** B737-800, origin LAX, destination IAX, number of journeys: 1, avg delay: -11.0\n* **Flight 1653:** B737-900, origin LAX, destination IAX, number of journeys: 2, avg delay: -7.0\n* **Flight 2385:** B737-900, origin LAX, destination IAX, number of journeys: 2, avg delay: 2.0\n* **Flight 2607:** B737-800, origin LAX, destination IAX, number of journeys: 1, avg delay: -2.0\n* **Flight 1715:** B737-MAX9, origin LAX, destination IAX, number of journeys: 1, avg delay: -4.0\n* **Flight 388:** B737-900, origin LAX, destination IAX, number of journeys: 3, avg delay: 6.333333333333332\n* **Flight 1735:** B757-300, origin LAX, destination IAX, number of journeys: 1, avg delay: -1.0\n* **Flight 2300:** B737-700, origin LAX, destination IAX, number of journeys: 1, avg delay: 2.0\n* **Flight 2391:** B737-900, origin LAX, destination IAX, number of",
+          "generation_time": 3.474639892578125,
+          "prompt_length": 358,
+          "answer_length": 189,
+          "model": "google/gemma-2-2b-it"
+        },
+        "Qwen/Qwen2.5-7B-Instruct": {
+          "answer": "Based on the provided data, here are all the flights from LAX to IAX:\n\n1. Flight Number: 2411\n   - Aircraft: B777-200\n   - Number of Journeys: 2\n   - Average Delay: -5.5 minutes\n\n2. Flight Number: 2608\n   - Aircraft: B737-800\n   - Number of Journeys: 3\n   - Average Delay: -7.67 minutes\n\n3. Flight Number: 500\n   - Aircraft: B737-900\n   - Number of Journeys: 2\n   - Average Delay: -25.0 minutes\n\n4. Flight Number: 1414\n   - Aircraft: B737-800\n   - Number of Journeys: 1\n   - Average Delay: -11.0 minutes\n\n5. Flight Number: 1653\n   - Aircraft: B737-900\n   - Number of Journeys: 2\n   - Average Delay: -7.0 minutes\n\n6. Flight Number: 2385\n   - Aircraft: B737-900\n   - Number of Journeys: 2\n   - Average Delay: 2.0 minutes\n\n7. Flight Number: 2607\n   - Aircraft: B737-800\n   - Number of Journeys: 1\n   - Average Delay: -2.0 minutes\n\n8. Flight Number: 1715\n   - Aircraft: B737-MAX9\n   - Number of Journeys: 1\n   - Average Delay: -4.0 minutes\n\n9. Flight Number: 388\n   - Aircraft: B737-900\n   - Number of Journeys: 3\n   - Average Delay: 6.33 minutes\n\n10. Flight Number: 1735\n    - Aircraft: B757-300\n    - Number of Journeys: 1\n    - Average Delay: -1.0 minute\n\n11. Flight Number: 2300\n    - Aircraft: B737-700\n    - Number of Journeys",
+          "generation_time": 3.946962594985962,
+          "prompt_length": 358,
+          "answer_length": 195,
+          "model": "Qwen/Qwen2.5-7B-Instruct"
+        }
+      }
+    },
+    {
+      "question": "What are the most common aircraft types used?",
+      "intent": "aircraft_info",
+      "entities": {
+        "order": "DESC"
+      },
+      "kg_result_count": 10,
+      "model_results": {
+        "Qwen/Qwen2.5-1.5B-Instruct": {
+          "answer": "Based on the data provided in the results, the most common aircraft type used is **B737-800**, which has been flown for **300 flights**. This makes up approximately **33%** of all flights recorded. The next most frequent aircraft type is **ERJ-175**, with **184 flights**, followed closely by **A320-200**, which has **181 flights**. \n\nThe other aircraft types have significantly fewer flights under them:\n\n- **B777-200**: 113 flights (approximately 13%)\n- **B737-MAX9**: 85 flights (approximately 10%)\n- **B737-700**: 72 flights (approximately 9%)\n- **B737-MAX8**: 62 flights (approximately 8%)\n\nTherefore, **B737-800** stands out as the most commonly used aircraft type among those listed.",
+          "generation_time": 7.615509748458862,
+          "prompt_length": 124,
+          "answer_length": 99,
+          "model": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        "google/gemma-2-2b-it": {
+          "answer": "The most common aircraft types used by the airline are:\n\n* **B737-800:**  with a flight count of 300.\n* **B737-900:** with a flight count of 305. \n\nThese two aircraft types represent a significant portion of the airline's fleet.",
+          "generation_time": 0.910001277923584,
+          "prompt_length": 124,
+          "answer_length": 38,
+          "model": "google/gemma-2-2b-it"
+        },
+        "Qwen/Qwen2.5-7B-Instruct": {
+          "answer": "Based on the data provided, the most common aircraft types used are the B737-900 and B737-800. Specifically, the B737-900 has 305 flights, and the B737-800 has 300 flights. These two aircraft types together account for 605 out of the total 1,444 flights mentioned in the data. This indicates that B737 models are the most frequently used in the dataset, with the B737-900 being slightly more common than the B737-800.",
+          "generation_time": 1.2547767162322998,
+          "prompt_length": 124,
+          "answer_length": 69,
+          "model": "Qwen/Qwen2.5-7B-Instruct"
+        }
+      }
+    },
+    {
+      "question": "What is the average food satisfaction score for Economy class?",
+      "intent": "satisfaction",
+      "entities": {
+        "passenger_class": "Economy",
+        "metric": "food_satisfaction_score"
+      },
+      "kg_result_count": 1,
+      "model_results": {
+        "Qwen/Qwen2.5-1.5B-Instruct": {
+          "answer": "The average food satisfaction score for Economy class is **2.823** out of 5.",
+          "generation_time": 1.673454999923706,
+          "prompt_length": 78,
+          "answer_length": 13,
+          "model": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        "google/gemma-2-2b-it": {
+          "answer": "The average food satisfaction score for Economy class is **2.82** out of 5.",
+          "generation_time": 0.6123311519622803,
+          "prompt_length": 78,
+          "answer_length": 13,
+          "model": "google/gemma-2-2b-it"
+        },
+        "Qwen/Qwen2.5-7B-Instruct": {
+          "answer": "The average food satisfaction score for Economy class is 2.823 out of 5. This score is derived from the analysis of 3000 journeys where passengers were categorized under Economy class.",
+          "generation_time": 0.6996893882751465,
+          "prompt_length": 78,
+          "answer_length": 30,
+          "model": "Qwen/Qwen2.5-7B-Instruct"
+        }
+      }
+    },
+    {
+      "question": "Which generation of passengers gives the highest food satisfaction ratings?",
+      "intent": "satisfaction_by_demographic",
+      "entities": {
+        "metric": "food_satisfaction_score",
+        "order": "DESC"
+      },
+      "kg_result_count": 6,
+      "model_results": {
+        "Qwen/Qwen2.5-1.5B-Instruct": {
+          "answer": "Based on the given results, the generation that provides the highest food satisfaction ratings is **Millennial**, with an average satisfaction score of **2.7990762124711326** out of 5. This surpasses the second-highest satisfaction score for the **Boomer** generation (with an average of **2.8252496433666203**).",
+          "generation_time": 3.926572322845459,
+          "prompt_length": 116,
+          "answer_length": 41,
+          "model": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        "google/gemma-2-2b-it": {
+          "answer": "The data provided does not give a direct answer to which generation has the highest food satisfaction rating. \n\n**Here's what we know:**\n\n* **Satisfaction Ratings:** The data shows an average satisfaction rating for food, but it's not broken down by generation.\n* **Journey Count:**  We do see a count for each generation's \"journey count,\" which could be interpreted as the number of flights they've taken. \n\n\nTo answer the question, we would need more specific data on food satisfaction ratings for each generation.",
+          "generation_time": 1.1075325012207031,
+          "prompt_length": 116,
+          "answer_length": 82,
+          "model": "google/gemma-2-2b-it"
+        },
+        "Qwen/Qwen2.5-7B-Instruct": {
+          "answer": "Based on the provided data, the information available does not include specific food satisfaction ratings for each generation. The data provided includes average satisfaction ratings but does not differentiate between satisfaction with food and overall satisfaction. \n\nThe average satisfaction ratings for each generation are as follows:\n- Gen Z: 3.03\n- Silent: 2.92\n- Boomer: 2.83\n- Gen X: 2.80\n- Millennial: 2.80\n- NBK: 2.50\n\nSince the data does not specify food satisfaction ratings, we can only infer that Gen Z has the highest overall satisfaction rating among the generations listed. However, this does not necessarily mean they give the highest food satisfaction ratings. To accurately answer the question about food satisfaction, we would need additional data that specifically measures satisfaction with food for each generation.",
+          "generation_time": 2.9486005306243896,
+          "prompt_length": 116,
+          "answer_length": 127,
+          "model": "Qwen/Qwen2.5-7B-Instruct"
+        }
+      }
+    }
+  ]
+}
